@@ -153,7 +153,7 @@
       <summary>Korrel</summary>
       <label class="toggle" style="margin-bottom:12px"><input type="checkbox" id="grainOn" checked> Korrel aan</label>
       <label class="swatch" style="margin-bottom:12px"><div class="cap">Korrelkleur</div><div class="chip" id="chipGrain"></div><div class="hex" id="hexGrain"></div><input type="color" id="grainColor" value="#F4F6F5"></label>
-      <div class="ctrl"><div class="top"><span>Dichtheid</span><span class="val" id="vGd"></span></div><input type="range" id="grainDensity" min="0" max="60" value="46"></div>
+      <div class="ctrl"><div class="top"><span>Dichtheid</span><span class="val" id="vGd"></span></div><input type="range" id="grainDensity" min="0" max="60" value="20"></div>
       <div class="ctrl" style="margin-bottom:0"><div class="top"><span>Fijnheid</span><span class="val" id="vGf"></span></div><input type="range" id="grainFreq" min="40" max="2400" value="2050"></div>
     </details>
 
@@ -272,7 +272,7 @@ const state={
     {id:isid++, color:"#72FFB2", ox:0, oy:-26, blur:26, op:1,  mode:"normal"},
   ],
   sel:null,
-  grainOn:true, grainColor:"#F4F6F5", grainDensity:46, grainFreq:2050,
+  grainOn:true, grainColor:"#F4F6F5", grainDensity:20, grainFreq:2050,
   dropOn:false, dropColor:"#ffffff", dropY:4, dropBlur:3,
   bg:"#F4F6F5", transparent:false,
 };
