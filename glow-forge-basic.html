@@ -31,6 +31,9 @@
   .swatch input[type=color]{position:absolute;inset:0;opacity:0;cursor:pointer}
   .swatch .hex{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-faint);margin-top:7px;text-transform:uppercase}
   .swatch-row{display:flex;gap:10px}
+  .presets{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}
+  .preset{width:26px;height:26px;border-radius:7px;border:1px solid rgba(255,255,255,.2);cursor:pointer;padding:0;flex:none;transition:.15s;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+  .preset:hover{transform:scale(1.1);border-color:var(--accent)}
   .ctrl{margin-bottom:15px}
   .ctrl .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
   .ctrl .top span:first-child{font-size:13px;color:var(--ink)}
@@ -119,7 +122,7 @@
 
     <div class="group">
       <div class="label">Vulkleur</div>
-      <label class="swatch"><div class="cap">Fill</div><div class="chip" id="chipFill"></div><div class="hex" id="hexFill"></div><input type="color" id="fill" value="#72FFB2"></label>
+      <label class="swatch"><div class="cap">Fill</div><div class="chip" id="chipFill"></div><div class="hex" id="hexFill"></div><input type="color" id="fill" value="#F4F6F5"></label>
     </div>
 
     <div class="group">
@@ -149,7 +152,7 @@
     <details open>
       <summary>Korrel</summary>
       <label class="toggle" style="margin-bottom:12px"><input type="checkbox" id="grainOn" checked> Korrel aan</label>
-      <label class="swatch" style="margin-bottom:12px"><div class="cap">Korrelkleur</div><div class="chip" id="chipGrain"></div><div class="hex" id="hexGrain"></div><input type="color" id="grainColor" value="#72FFB2"></label>
+      <label class="swatch" style="margin-bottom:12px"><div class="cap">Korrelkleur</div><div class="chip" id="chipGrain"></div><div class="hex" id="hexGrain"></div><input type="color" id="grainColor" value="#F4F6F5"></label>
       <div class="ctrl"><div class="top"><span>Dichtheid</span><span class="val" id="vGd"></span></div><input type="range" id="grainDensity" min="0" max="60" value="22"></div>
       <div class="ctrl" style="margin-bottom:0"><div class="top"><span>Fijnheid</span><span class="val" id="vGf"></span></div><input type="range" id="grainFreq" min="40" max="2400" value="130"></div>
     </details>
@@ -165,7 +168,7 @@
     <details open>
       <summary>Achtergrond</summary>
       <div class="swatch-row">
-        <label class="swatch" style="flex:2"><div class="cap">Kleur</div><div class="chip" id="chipBg"></div><div class="hex" id="hexBg"></div><input type="color" id="bg" value="#5e9a96"></label>
+        <label class="swatch" style="flex:2"><div class="cap">Kleur</div><div class="chip" id="chipBg"></div><div class="hex" id="hexBg"></div><input type="color" id="bg" value="#F4F6F5"></label>
         <label class="swatch" style="display:flex;flex-direction:column;justify-content:space-between"><div class="cap">Transparant</div><button class="btn" id="transBtn" style="justify-content:center;padding:8px">uit</button></label>
       </div>
     </details>
@@ -175,26 +178,12 @@
     <div class="stage-top">
       <div class="hint">Eén gevulde vorm + inner shadows + korrel — exact zoals de Figma-export</div>
       <div class="actions">
-        <button class="btn" id="copyBtn">Kopieer SVG</button>
-        <button class="btn primary" id="exportBtn">Exporteer</button>
+        <button class="btn primary" id="copyBtn">Kopieer SVG</button>
       </div>
     </div>
     <div class="canvas-wrap"><div class="checker"></div><div id="viewport"></div></div>
     <div class="stage-foot" id="foot"></div>
   </main>
-</div>
-
-<div class="modal-bg" id="exportModal">
-  <div class="modal">
-    <div class="modal-head"><h2>Exporteren</h2><button class="x" id="modalClose">&times;</button></div>
-    <div class="sub">SVG-code</div>
-    <textarea id="svgCode" readonly></textarea>
-    <div class="row"><button class="btn primary" id="copySvg" style="flex:1;justify-content:center">Kopieer code</button><button class="btn" id="openSvg" style="flex:1;justify-content:center">Open .svg in tab</button></div>
-    <div class="sub">PNG (4×)</div>
-    <div class="png-preview"><img id="pngImg" alt="PNG voorbeeld"></div>
-    <div class="row"><button class="btn primary" id="openPng" style="flex:1;justify-content:center">Open .png in tab</button></div>
-    <div class="note">Directe download werkt niet in de ingebedde preview. Open in een tab en sla daar op, of kopieer de code. Open je dit bestand los in je browser, dan downloaden de knoppen wél meteen.</div>
-  </div>
 </div>
 
 <script>
@@ -277,15 +266,15 @@ function fitTransform(geomStr){
 /* ---------- state ---------- */
 let isid=1;
 const state={
-  shape:"house", custom:null, customFit:null, fill:"#72FFB2",
+  shape:"house", custom:null, customFit:null, fill:"#F4F6F5",
   inner:[
     {id:isid++, color:"#ffffff", ox:0, oy:0,  blur:11, op:1,  mode:"color-dodge"},
     {id:isid++, color:"#72FFB2", ox:0, oy:-26, blur:26, op:1,  mode:"normal"},
   ],
   sel:null,
-  grainOn:true, grainColor:"#72FFB2", grainDensity:22, grainFreq:130,
+  grainOn:true, grainColor:"#F4F6F5", grainDensity:22, grainFreq:130,
   dropOn:false, dropColor:"#ffffff", dropY:4, dropBlur:3,
-  bg:"#5e9a96", transparent:false,
+  bg:"#F4F6F5", transparent:false,
 };
 state.sel=state.inner[0].id;
 
@@ -375,6 +364,26 @@ bindColor("grainColor","chipGrain","hexGrain","grainColor");
 bindColor("dropColor","chipDrop","hexDrop","dropColor");
 bindColor("bg","chipBg","hexBg","bg");
 
+/* ---------- preset palette ---------- */
+const PRESETS=[
+  {name:"Plenny background",hex:"#F4F6F5"},
+  {name:"Jade 3",hex:"#1B4437"},
+  {name:"Mint 6",hex:"#72FFB2"},
+];
+function addPresets(inputId){
+  const inp=$(inputId);if(!inp)return;
+  const host=inp.closest(".swatch-row")||inp.closest(".swatch");if(!host)return;
+  const row=document.createElement("div");row.className="presets";
+  PRESETS.forEach(p=>{
+    const b=document.createElement("button");b.type="button";b.className="preset";
+    b.title=p.name+" · "+p.hex;b.style.background=p.hex;
+    b.onclick=ev=>{ev.preventDefault();inp.value=p.hex;inp.dispatchEvent(new Event("input",{bubbles:true}));};
+    row.appendChild(b);
+  });
+  host.insertAdjacentElement("afterend",row);
+}
+["fill","isColor","grainColor","dropColor","bg"].forEach(addPresets);
+
 /* ---------- simple ranges/toggles ---------- */
 function bindRange(id,key,fmt,scale){const inp=$(id),val=$("v"+id.charAt(0).toUpperCase()+id.slice(1));const upd=()=>{state[key]=scale?+inp.value*scale:+inp.value;if(val)val.textContent=fmt(inp.value);render();};inp.oninput=upd;upd();}
 bindRange("grainDensity","grainDensity",v=>v,null);
@@ -447,28 +456,12 @@ document.querySelectorAll("#isMode button").forEach(b=>b.onclick=()=>{const s=se
 $("isDup").onclick=()=>{const s=selIS();if(s){const n={...s,id:isid++};const i=state.inner.indexOf(s);state.inner.splice(i+1,0,n);state.sel=n.id;render();renderISList();}};
 $("isDel").onclick=()=>{const s=selIS();if(s){state.inner=state.inner.filter(x=>x.id!==s.id);state.sel=state.inner.length?state.inner[state.inner.length-1].id:null;render();renderISList();}};
 
-/* ---------- export ---------- */
+/* ---------- copy ---------- */
 function currentSVG(){return buildSVG();}
 function flashBtn(b,m){if(!b)return;const t=b.dataset._t||b.textContent;b.dataset._t=t;b.textContent=m;setTimeout(()=>b.textContent=b.dataset._t,1400);}
 function robustCopy(text,btn){const fb=()=>{const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.top="-9999px";document.body.appendChild(ta);ta.focus();ta.select();let ok=false;try{ok=document.execCommand("copy");}catch(e){}document.body.removeChild(ta);flashBtn(btn,ok?"Gekopieerd ✓":"Selecteer & kopieer");};
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(()=>flashBtn(btn,"Gekopieerd ✓")).catch(fb);else fb();}
-const modal=$("exportModal");let lastSvgUrl=null,lastPngUrl=null;
-function tryOpen(url){const a=document.createElement("a");a.href=url;a.download=url===lastPngUrl?"icon.png":"icon.svg";document.body.appendChild(a);a.click();a.remove();window.open(url,"_blank");}
-function openExport(){const svg=currentSVG();$("svgCode").value=svg;
-  if(lastSvgUrl)URL.revokeObjectURL(lastSvgUrl);lastSvgUrl=URL.createObjectURL(new Blob([svg],{type:"image/svg+xml"}));
-  $("pngImg").removeAttribute("src");lastPngUrl=null;
-  const img=new Image();img.onload=()=>{const sc=4,cv=document.createElement("canvas");cv.width=VB*sc;cv.height=VB*sc;cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);lastPngUrl=cv.toDataURL("image/png");$("pngImg").src=lastPngUrl;};
-  img.onerror=()=>{$("pngImg").alt="PNG-render mislukte — gebruik de SVG.";};
-  img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
-  modal.classList.add("open");}
-$("exportBtn").onclick=openExport;
 $("copyBtn").onclick=()=>robustCopy(currentSVG(),$("copyBtn"));
-$("copySvg").onclick=()=>robustCopy($("svgCode").value,$("copySvg"));
-$("openSvg").onclick=()=>{if(lastSvgUrl)tryOpen(lastSvgUrl);};
-$("openPng").onclick=()=>{if(lastPngUrl)tryOpen(lastPngUrl);};
-$("modalClose").onclick=()=>modal.classList.remove("open");
-modal.addEventListener("click",e=>{if(e.target===modal)modal.classList.remove("open");});
-document.addEventListener("keydown",e=>{if(e.key==="Escape")modal.classList.remove("open");});
 
 /* ---------- defaults persistence ---------- */
 const LSKEY="glowforge_basic_defaults_v1";
