@@ -1,0 +1,510 @@
+<!-- GlowForge · Basic — faithful Figma-style inner-shadow icon builder -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GlowForge · Basic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c1413; --panel:rgba(255,255,255,.035); --panel-border:rgba(255,255,255,.08);
+    --ink:#e8f1ee; --ink-dim:#8aa19b; --ink-faint:#5e716c; --accent:#46e6a3; --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font-family:"Hanken Grotesk",sans-serif;color:var(--ink);
+    background:radial-gradient(900px 600px at 18% -10%,rgba(70,230,163,.10),transparent 60%),
+               radial-gradient(700px 500px at 110% 110%,rgba(127,230,216,.08),transparent 55%),var(--bg);
+    -webkit-font-smoothing:antialiased;}
+  .app{display:grid;grid-template-columns:340px 1fr;min-height:100vh}
+  .panel{border-right:1px solid var(--panel-border);padding:26px 24px 48px;background:rgba(8,14,13,.55);backdrop-filter:blur(8px);overflow-y:auto;max-height:100vh}
+  .brand{display:flex;align-items:center;gap:11px;margin-bottom:24px}
+  .brand .mark{width:30px;height:30px;border-radius:9px;flex:none;background:linear-gradient(150deg,#72FFB2,#7fe6d8);box-shadow:0 0 18px -2px #72FFB2,inset 0 0 8px rgba(255,255,255,.4)}
+  .brand h1{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:19px;letter-spacing:-.02em;margin:0;line-height:1}
+  .brand small{display:block;color:var(--ink-faint);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
+  .group{margin-bottom:22px}
+  .group>.label{font-size:11px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:11px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+  .tip{font-size:11.5px;color:var(--ink-dim);line-height:1.5;margin-bottom:11px}
+  .swatch{border:1px solid var(--panel-border);border-radius:12px;padding:10px 11px;background:var(--panel);position:relative;cursor:pointer;display:block}
+  .swatch .cap{font-size:11px;color:var(--ink-dim);margin-bottom:8px}
+  .swatch .chip{height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.14)}
+  .swatch input[type=color]{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .swatch .hex{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-faint);margin-top:7px;text-transform:uppercase}
+  .swatch-row{display:flex;gap:10px}
+  .ctrl{margin-bottom:15px}
+  .ctrl .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+  .ctrl .top span:first-child{font-size:13px;color:var(--ink)}
+  .ctrl .val{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent)}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:99px;background:rgba(255,255,255,.12);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--ink);border:3px solid var(--bg);box-shadow:0 0 0 1px var(--accent),0 0 10px -1px var(--accent)}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--ink);border:3px solid var(--bg);box-shadow:0 0 0 1px var(--accent)}
+  .shapes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .shapes button{aspect-ratio:1;border:1px solid var(--panel-border);border-radius:11px;background:var(--panel);cursor:pointer;display:grid;place-items:center;padding:9px;transition:.15s;color:var(--ink-dim)}
+  .shapes button:hover{border-color:rgba(255,255,255,.22);color:var(--ink)}
+  .shapes button.active{border-color:var(--accent);color:var(--accent);background:rgba(70,230,163,.08)}
+  .shapes button svg{width:100%;height:100%;display:block}
+  textarea{width:100%;min-height:66px;resize:vertical;border-radius:12px;border:1px solid var(--panel-border);background:rgba(0,0,0,.25);color:var(--ink);font-family:"JetBrains Mono",monospace;font-size:11px;padding:10px;line-height:1.5}
+  textarea::placeholder{color:var(--ink-faint)}
+  textarea:focus{outline:none;border-color:rgba(70,230,163,.5)}
+  .seg{display:flex;background:rgba(0,0,0,.25);border:1px solid var(--panel-border);border-radius:11px;padding:3px;gap:3px}
+  .seg button{flex:1;border:none;background:transparent;color:var(--ink-dim);padding:7px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;transition:.15s}
+  .seg button.active{background:rgba(255,255,255,.08);color:var(--ink)}
+  .btn{border:1px solid var(--panel-border);background:var(--panel);color:var(--ink);padding:9px 15px;border-radius:11px;cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;gap:7px;transition:.15s}
+  .btn:hover{border-color:rgba(255,255,255,.22)}
+  .btn.primary{background:var(--accent);color:#05231a;border-color:transparent;font-weight:600}
+  .btn.sm{padding:6px 10px;font-size:12px}
+  .layer-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+  .layer-chip{display:flex;align-items:center;gap:9px;border:1px solid var(--panel-border);background:var(--panel);color:var(--ink-dim);border-radius:10px;padding:8px 11px;cursor:pointer;font-family:inherit;font-size:13px;text-align:left;width:100%}
+  .layer-chip:hover{border-color:rgba(255,255,255,.2);color:var(--ink)}
+  .layer-chip.active{border-color:var(--accent);color:var(--ink);background:rgba(70,230,163,.08)}
+  .layer-chip .dot{width:14px;height:14px;border-radius:50%;border:1px solid rgba(255,255,255,.3);flex:none}
+  .layer-chip .mode{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink-faint);text-transform:uppercase}
+  .toggle{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px}
+  .toggle input{accent-color:var(--accent);width:15px;height:15px}
+  details{border-top:1px solid var(--panel-border);padding-top:16px;margin-top:6px}
+  summary{cursor:pointer;font-size:11px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;list-style:none;margin-bottom:14px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";float:right;color:var(--ink-dim)}
+  details[open] summary::after{content:"–"}
+  .stage{display:flex;flex-direction:column}
+  .stage-top{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;border-bottom:1px solid var(--panel-border)}
+  .stage-top .hint{color:var(--ink-faint);font-size:12.5px}
+  .actions{display:flex;gap:10px}
+  .canvas-wrap{flex:1;display:grid;place-items:center;padding:40px;position:relative;overflow:hidden}
+  .checker{position:absolute;inset:0;opacity:.5;background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.025) 75%),linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.025) 75%);background-size:34px 34px;background-position:0 0,17px 17px;pointer-events:none}
+  #viewport{width:min(60vh,540px);aspect-ratio:1;position:relative;z-index:1;border-radius:24px;overflow:hidden;box-shadow:0 40px 90px -40px rgba(0,0,0,.8)}
+  #viewport svg{width:100%;height:100%;display:block}
+  .stage-foot{padding:10px 28px 16px;color:var(--ink-faint);font-size:11.5px;font-family:"JetBrains Mono",monospace;text-align:center}
+  .modal-bg{position:fixed;inset:0;background:rgba(2,8,7,.66);backdrop-filter:blur(6px);display:none;place-items:center;z-index:50}
+  .modal-bg.open{display:grid}
+  .modal{width:min(560px,92vw);max-height:88vh;overflow:auto;background:#0e1817;border:1px solid var(--panel-border);border-radius:18px;padding:22px}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .modal-head h2{font-family:"Bricolage Grotesque",sans-serif;font-size:18px;margin:0}
+  .modal-head .x{border:none;background:transparent;color:var(--ink-dim);font-size:22px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:8px}
+  .modal .sub{font-size:11px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;margin:18px 0 10px}
+  .modal textarea{min-height:120px}
+  .png-preview{display:grid;place-items:center;border:1px solid var(--panel-border);border-radius:12px;padding:14px;background:rgba(0,0,0,.25);margin-bottom:10px}
+  .png-preview img{max-width:200px;width:100%;border-radius:8px}
+  .modal .row{display:flex;gap:10px;margin-top:10px}
+  .modal .note{font-size:12px;color:var(--ink-dim);line-height:1.55;margin-top:8px}
+  @media (max-width:820px){.app{grid-template-columns:1fr}.panel{max-height:none;border-right:none;border-bottom:1px solid var(--panel-border)}#viewport{width:min(80vw,420px)}}
+</style>
+
+<div class="app">
+  <aside class="panel">
+    <div class="brand"><div class="mark"></div><div><h1>GlowForge · Basic</h1><small>Figma-style inner shadow</small></div></div>
+
+    <div class="group">
+      <div style="display:flex;gap:8px">
+        <button class="btn sm" id="saveDef" style="flex:1;justify-content:center">Bewaar als standaard</button>
+        <button class="btn sm" id="resetDef" style="flex:1;justify-content:center">Herstel</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="label">Vorm</div>
+      <div class="shapes" id="shapes"></div>
+    </div>
+
+    <div class="group">
+      <div class="label">Eigen icoon</div>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <button class="btn sm" id="uploadBtn" style="flex:1;justify-content:center">SVG uploaden</button>
+        <button class="btn sm" id="clearIcon" style="flex:1;justify-content:center">Wissen</button>
+      </div>
+      <input type="file" id="svgFile" accept=".svg,image/svg+xml" hidden>
+      <div id="iconStatus" class="tip" style="display:none"></div>
+      <textarea id="paste" placeholder="…of plak SVG-code / een path. Je kunt ook een .svg op het canvas slepen."></textarea>
+    </div>
+
+    <div class="group">
+      <div class="label">Vulkleur</div>
+      <label class="swatch"><div class="cap">Fill</div><div class="chip" id="chipFill"></div><div class="hex" id="hexFill"></div><input type="color" id="fill" value="#72FFB2"></label>
+    </div>
+
+    <div class="group">
+      <div class="label">Inner shadows <button class="btn sm" id="addIS">+ laag</button></div>
+      <div class="tip">De glow. Elke laag = één inner shadow (kleur, offset = richting, blur, blend).</div>
+      <div id="isList" class="layer-list"></div>
+      <div id="isEditor" style="display:none">
+        <div class="swatch-row" style="margin-bottom:12px">
+          <label class="swatch"><div class="cap">Kleur</div><div class="chip" id="isChip"></div><div class="hex" id="isHex"></div><input type="color" id="isColor"></label>
+          <div class="swatch" style="display:flex;flex-direction:column;justify-content:center;gap:6px">
+            <div class="cap">Blend</div>
+            <div class="seg" id="isMode">
+              <button data-m="color-dodge">Dodge</button>
+              <button data-m="normal">Norm</button>
+              <button data-m="screen">Scrn</button>
+            </div>
+          </div>
+        </div>
+        <div class="ctrl"><div class="top"><span>Offset X (richting)</span><span class="val" id="vIsX"></span></div><input type="range" id="isX" min="-120" max="120"></div>
+        <div class="ctrl"><div class="top"><span>Offset Y (richting)</span><span class="val" id="vIsY"></span></div><input type="range" id="isY" min="-120" max="120"></div>
+        <div class="ctrl"><div class="top"><span>Blur</span><span class="val" id="vIsB"></span></div><input type="range" id="isB" min="0" max="120"></div>
+        <div class="ctrl"><div class="top"><span>Dekking</span><span class="val" id="vIsO"></span></div><input type="range" id="isO" min="0" max="100"></div>
+        <div style="display:flex;gap:10px"><button class="btn" id="isDup" style="flex:1;justify-content:center">Dupliceer</button><button class="btn" id="isDel" style="flex:1;justify-content:center">Verwijder</button></div>
+      </div>
+    </div>
+
+    <details open>
+      <summary>Korrel</summary>
+      <label class="toggle" style="margin-bottom:12px"><input type="checkbox" id="grainOn" checked> Korrel aan</label>
+      <label class="swatch" style="margin-bottom:12px"><div class="cap">Korrelkleur</div><div class="chip" id="chipGrain"></div><div class="hex" id="hexGrain"></div><input type="color" id="grainColor" value="#72FFB2"></label>
+      <div class="ctrl"><div class="top"><span>Dichtheid</span><span class="val" id="vGd"></span></div><input type="range" id="grainDensity" min="0" max="60" value="22"></div>
+      <div class="ctrl" style="margin-bottom:0"><div class="top"><span>Fijnheid</span><span class="val" id="vGf"></span></div><input type="range" id="grainFreq" min="40" max="2400" value="130"></div>
+    </details>
+
+    <details>
+      <summary>Slagschaduw</summary>
+      <label class="toggle" style="margin-bottom:12px"><input type="checkbox" id="dropOn"> Slagschaduw aan</label>
+      <label class="swatch" style="margin-bottom:12px"><div class="cap">Kleur</div><div class="chip" id="chipDrop"></div><div class="hex" id="hexDrop"></div><input type="color" id="dropColor" value="#ffffff"></label>
+      <div class="ctrl"><div class="top"><span>Offset Y</span><span class="val" id="vDy"></span></div><input type="range" id="dropY" min="-40" max="40" value="4"></div>
+      <div class="ctrl" style="margin-bottom:0"><div class="top"><span>Blur</span><span class="val" id="vDb"></span></div><input type="range" id="dropBlur" min="0" max="40" value="3"></div>
+    </details>
+
+    <details open>
+      <summary>Achtergrond</summary>
+      <div class="swatch-row">
+        <label class="swatch" style="flex:2"><div class="cap">Kleur</div><div class="chip" id="chipBg"></div><div class="hex" id="hexBg"></div><input type="color" id="bg" value="#5e9a96"></label>
+        <label class="swatch" style="display:flex;flex-direction:column;justify-content:space-between"><div class="cap">Transparant</div><button class="btn" id="transBtn" style="justify-content:center;padding:8px">uit</button></label>
+      </div>
+    </details>
+  </aside>
+
+  <main class="stage">
+    <div class="stage-top">
+      <div class="hint">Eén gevulde vorm + inner shadows + korrel — exact zoals de Figma-export</div>
+      <div class="actions">
+        <button class="btn" id="copyBtn">Kopieer SVG</button>
+        <button class="btn primary" id="exportBtn">Exporteer</button>
+      </div>
+    </div>
+    <div class="canvas-wrap"><div class="checker"></div><div id="viewport"></div></div>
+    <div class="stage-foot" id="foot"></div>
+  </main>
+</div>
+
+<div class="modal-bg" id="exportModal">
+  <div class="modal">
+    <div class="modal-head"><h2>Exporteren</h2><button class="x" id="modalClose">&times;</button></div>
+    <div class="sub">SVG-code</div>
+    <textarea id="svgCode" readonly></textarea>
+    <div class="row"><button class="btn primary" id="copySvg" style="flex:1;justify-content:center">Kopieer code</button><button class="btn" id="openSvg" style="flex:1;justify-content:center">Open .svg in tab</button></div>
+    <div class="sub">PNG (4×)</div>
+    <div class="png-preview"><img id="pngImg" alt="PNG voorbeeld"></div>
+    <div class="row"><button class="btn primary" id="openPng" style="flex:1;justify-content:center">Open .png in tab</button></div>
+    <div class="note">Directe download werkt niet in de ingebedde preview. Open in een tab en sla daar op, of kopieer de code. Open je dit bestand los in je browser, dan downloaden de knoppen wél meteen.</div>
+  </div>
+</div>
+
+<script>
+const VB=220, C=VB/2, PAD=26;
+const svgns="http://www.w3.org/2000/svg";
+
+/* ---------- shapes ---------- */
+function pt(x,y){return {x,y};}
+function roundedPolygon(points,r){
+  const n=points.length;let d="";const sub=(a,b)=>({x:a.x-b.x,y:a.y-b.y});const len=v=>Math.hypot(v.x,v.y);
+  for(let i=0;i<n;i++){const prev=points[(i-1+n)%n],cur=points[i],next=points[(i+1)%n];
+    const v1=sub(prev,cur),v2=sub(next,cur),l1=len(v1),l2=len(v2),rr=Math.min(r,l1/2,l2/2);
+    const p1={x:cur.x+v1.x/l1*rr,y:cur.y+v1.y/l1*rr},p2={x:cur.x+v2.x/l2*rr,y:cur.y+v2.y/l2*rr};
+    d+=(i===0?`M ${p1.x.toFixed(1)} ${p1.y.toFixed(1)} `:`L ${p1.x.toFixed(1)} ${p1.y.toFixed(1)} `);
+    d+=`Q ${cur.x.toFixed(1)} ${cur.y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)} `;}
+  return d+"Z";
+}
+function ngon(cx,cy,r,s,rot=-Math.PI/2){const a=[];for(let i=0;i<s;i++){const t=rot+i*2*Math.PI/s;a.push(pt(cx+Math.cos(t)*r,cy+Math.sin(t)*r));}return a;}
+function star(cx,cy,o,i2,sp,rot=-Math.PI/2){const a=[];for(let i=0;i<sp*2;i++){const r=i%2?i2:o,t=rot+i*Math.PI/sp;a.push(pt(cx+Math.cos(t)*r,cy+Math.sin(t)*r));}return a;}
+const SHAPES={
+  house:()=>`<path d="${roundedPolygon([pt(C,28),pt(VB-PAD,98),pt(VB-PAD,VB-PAD),pt(PAD,VB-PAD),pt(PAD,98)],22)}"/>`,
+  squircle:()=>`<path d="${roundedPolygon([pt(PAD,PAD),pt(VB-PAD,PAD),pt(VB-PAD,VB-PAD),pt(PAD,VB-PAD)],46)}"/>`,
+  circle:()=>`<circle cx="${C}" cy="${C}" r="${C-PAD}"/>`,
+  hexagon:()=>`<path d="${roundedPolygon(ngon(C,C,C-PAD,6,0),20)}"/>`,
+  triangle:()=>`<path d="${roundedPolygon(ngon(C,C+8,C-PAD,3),18)}"/>`,
+  star:()=>`<path d="${roundedPolygon(star(C,C,C-PAD,(C-PAD)*0.46,5),8)}"/>`,
+  shield:()=>`<path d="M ${C} ${PAD} L ${VB-PAD-8} ${PAD+24} L ${VB-PAD-8} ${C+10} Q ${VB-PAD-8} ${VB-PAD} ${C} ${VB-PAD+2} Q ${PAD+8} ${VB-PAD} ${PAD+8} ${C+10} L ${PAD+8} ${PAD+24} Z"/>`,
+  heart:()=>`<path d="M ${C} ${VB-PAD} C 40 150 ${PAD} 120 ${PAD} 84 C ${PAD} 56 44 40 70 40 C 90 40 ${C} 58 ${C} 78 C ${C} 58 130 40 150 40 C 176 40 ${VB-PAD} 56 ${VB-PAD} 84 C ${VB-PAD} 120 180 150 ${C} ${VB-PAD} Z"/>`,
+};
+const SHAPE_KEYS=Object.keys(SHAPES);
+const IMPORTED = {
+  home: { vb:"0 0 730 801", g:`<g> <path d="M81.5668 800.357C36.5187 800.357 0 763.839 0 718.791V293.974C0 268.3 12.0877 244.125 32.6267 228.721L315.838 16.3124C344.839 -5.43871 384.716 -5.43867 413.718 16.3125L696.929 228.721C717.468 244.125 729.556 268.3 729.556 293.974V718.791C729.556 763.839 693.037 800.357 647.989 800.357H410.375H319.181H81.5668Z"/> </g>` },
+  check: { vb:"0 0 830 830", g:`<g> <path d="M414.963 0C642.437 0 826.842 184.404 826.842 411.879C826.842 639.353 642.437 823.758 414.963 823.758C187.488 823.758 3.08398 639.353 3.08398 411.879C3.08398 184.404 187.488 0 414.963 0ZM381.215 444.363L292.062 355.211L233.327 413.946L382.264 562.884L618.256 325.843L559.521 266.059L381.215 444.363Z"/> </g>` },
+  cents: { vb:"0 0 849 849", g:`<g> <path d="M424.412 844C306.408 844 206.574 825.831 124.909 789.492C43.2445 753.153 2.41211 708.804 2.41211 656.444V187.556C2.41211 135.978 43.6352 91.8241 126.082 55.0944C208.528 18.3648 307.971 0 424.412 0C540.853 0 640.296 18.3648 722.743 55.0944C805.189 91.8241 846.412 135.978 846.412 187.556V656.444C846.412 708.804 805.58 753.153 723.915 789.492C642.25 825.831 542.416 844 424.412 844ZM424.412 282.506C493.964 282.506 563.907 272.542 634.24 252.614C704.573 232.686 744.038 211.391 752.634 188.728C744.038 166.065 704.769 144.574 634.826 124.256C564.883 103.937 494.745 93.7778 424.412 93.7778C353.297 93.7778 283.55 103.742 215.17 123.669C146.791 143.597 107.131 165.283 96.1899 188.728C107.131 212.172 146.791 233.663 215.17 253.2C283.55 272.737 353.297 282.506 424.412 282.506ZM424.412 515.778C457.234 515.778 488.884 514.215 519.362 511.089C549.84 507.963 578.95 503.469 606.693 497.608C634.435 491.747 660.615 484.519 685.232 475.922C709.848 467.326 732.316 457.557 752.634 446.617V305.95C732.316 316.891 709.848 326.659 685.232 335.256C660.615 343.852 634.435 351.081 606.693 356.942C578.95 362.803 549.84 367.296 519.362 370.422C488.884 373.548 457.234 375.111 424.412 375.111C391.59 375.111 359.549 373.548 328.29 370.422C297.031 367.296 267.53 362.803 239.787 356.942C212.045 351.081 186.06 343.852 161.834 335.256C137.608 326.659 115.727 316.891 96.1899 305.95V446.617C115.727 457.557 137.608 467.326 161.834 475.922C186.06 484.519 212.045 491.747 239.787 497.608C267.53 503.469 297.031 507.963 328.29 511.089C359.549 514.215 391.59 515.778 424.412 515.778ZM424.412 750.222C460.36 750.222 496.895 747.487 534.015 742.017C571.135 736.546 605.325 729.318 636.584 720.331C667.844 711.344 694.023 701.184 715.123 689.853C736.223 678.521 748.727 666.995 752.634 655.272V540.394C732.316 551.335 709.848 561.104 685.232 569.7C660.615 578.296 634.435 585.525 606.693 591.386C578.95 597.247 549.84 601.741 519.362 604.867C488.884 607.993 457.234 609.556 424.412 609.556C391.59 609.556 359.549 607.993 328.29 604.867C297.031 601.741 267.53 597.247 239.787 591.386C212.045 585.525 186.06 578.296 161.834 569.7C137.608 561.104 115.727 551.335 96.1899 540.394V656.444C100.097 668.167 112.406 679.498 133.115 690.439C153.824 701.38 179.808 711.344 211.068 720.331C242.327 729.318 276.712 736.546 314.223 742.017C351.734 747.487 388.464 750.222 424.412 750.222Z"/> <path d="M424.412 844C306.408 844 206.574 825.831 124.909 789.492C43.2445 753.153 2.41211 708.804 2.41211 656.444V187.556C2.41211 135.978 43.6352 91.8241 126.082 55.0944C208.528 18.3648 307.971 0 424.412 0C540.853 0 640.296 18.3648 722.743 55.0944C805.189 91.8241 846.412 135.978 846.412 187.556V656.444C846.412 708.804 805.58 753.153 723.915 789.492C642.25 825.831 542.416 844 424.412 844ZM424.412 282.506C493.964 282.506 563.907 272.542 634.24 252.614C704.573 232.686 744.038 211.391 752.634 188.728C744.038 166.065 704.769 144.574 634.826 124.256C564.883 103.937 494.745 93.7778 424.412 93.7778C353.297 93.7778 283.55 103.742 215.17 123.669C146.791 143.597 107.131 165.283 96.1899 188.728C107.131 212.172 146.791 233.663 215.17 253.2C283.55 272.737 353.297 282.506 424.412 282.506ZM424.412 515.778C457.234 515.778 488.884 514.215 519.362 511.089C549.84 507.963 578.95 503.469 606.693 497.608C634.435 491.747 660.615 484.519 685.232 475.922C709.848 467.326 732.316 457.557 752.634 446.617V305.95C732.316 316.891 709.848 326.659 685.232 335.256C660.615 343.852 634.435 351.081 606.693 356.942C578.95 362.803 549.84 367.296 519.362 370.422C488.884 373.548 457.234 375.111 424.412 375.111C391.59 375.111 359.549 373.548 328.29 370.422C297.031 367.296 267.53 362.803 239.787 356.942C212.045 351.081 186.06 343.852 161.834 335.256C137.608 326.659 115.727 316.891 96.1899 305.95V446.617C115.727 457.557 137.608 467.326 161.834 475.922C186.06 484.519 212.045 491.747 239.787 497.608C267.53 503.469 297.031 507.963 328.29 511.089C359.549 514.215 391.59 515.778 424.412 515.778ZM424.412 750.222C460.36 750.222 496.895 747.487 534.015 742.017C571.135 736.546 605.325 729.318 636.584 720.331C667.844 711.344 694.023 701.184 715.123 689.853C736.223 678.521 748.727 666.995 752.634 655.272V540.394C732.316 551.335 709.848 561.104 685.232 569.7C660.615 578.296 634.435 585.525 606.693 591.386C578.95 597.247 549.84 601.741 519.362 604.867C488.884 607.993 457.234 609.556 424.412 609.556C391.59 609.556 359.549 607.993 328.29 604.867C297.031 601.741 267.53 597.247 239.787 591.386C212.045 585.525 186.06 578.296 161.834 569.7C137.608 561.104 115.727 551.335 96.1899 540.394V656.444C100.097 668.167 112.406 679.498 133.115 690.439C153.824 701.38 179.808 711.344 211.068 720.331C242.327 729.318 276.712 736.546 314.223 742.017C351.734 747.487 388.464 750.222 424.412 750.222Z"/> </g>` },
+  cookie: { vb:"0 0 833 833", g:`<g> <path d="M830.134 369.7C759.328 368.441 701.363 314.598 693.623 245.566C677.693 251.87 660.334 255.332 642.159 255.332C564.866 255.332 502.215 192.681 502.215 115.403C502.215 108.339 502.742 101.402 503.756 94.6201C453.981 84.3976 413.853 47.7568 398.662 0C176.92 9.26572 0 191.928 0 415.916C0 639.905 186.398 832.206 416.337 832.206C646.276 832.206 832.674 645.829 832.674 415.916C832.674 400.298 831.808 384.876 830.134 369.7ZM276.118 551.785C249.887 551.785 228.623 530.524 228.623 504.296C228.623 478.068 249.887 456.806 276.118 456.806C302.349 456.806 323.613 478.068 323.613 504.296C323.613 530.524 302.349 551.785 276.118 551.785ZM302.912 343.803C276.681 343.803 255.417 322.541 255.417 296.313C255.417 270.085 276.681 248.824 302.912 248.824C329.143 248.824 350.407 270.085 350.407 296.313C350.407 322.541 329.143 343.803 302.912 343.803ZM463.832 416.106C437.601 416.106 416.337 394.845 416.337 368.617C416.337 342.389 437.601 321.127 463.832 321.127C490.063 321.127 511.327 342.389 511.327 368.617C511.327 394.845 490.063 416.106 463.832 416.106ZM544.848 618.819C526.335 618.819 511.327 603.813 511.327 585.302C511.327 566.792 526.335 551.785 544.848 551.785C563.36 551.785 578.368 566.792 578.368 585.302C578.368 603.813 563.36 618.819 544.848 618.819Z"/> </g>` },
+};
+const IMPORTED_KEYS=Object.keys(IMPORTED);
+const impFit={};
+
+
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function hexToRgb(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');const n=parseInt(h,16);return [(n>>16&255)/255,(n>>8&255)/255,(n&255)/255];}
+function colorMatrix(hex,a){const[r,g,b]=hexToRgb(hex);return `0 0 0 0 ${r.toFixed(4)} 0 0 0 0 ${g.toFixed(4)} 0 0 0 0 ${b.toFixed(4)} 0 0 0 ${a.toFixed(3)} 0`;}
+const HARD=`0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0`;
+
+function stripPaint(fragment){
+  try{const doc=new DOMParser().parseFromString(`<svg xmlns="${svgns}">${fragment}</svg>`,"image/svg+xml");
+    if(doc.querySelector("parsererror"))return null;
+    const root=doc.documentElement;
+    // drop everything that isn't raw geometry (their own filters, gradients, masks…)
+    root.querySelectorAll("defs,filter,mask,clipPath,linearGradient,radialGradient,pattern,style,title,desc,image").forEach(n=>n.remove());
+    root.querySelectorAll("*").forEach(el=>{
+      ["fill","stroke","class","filter","mask","clip-path","opacity","fill-opacity","stroke-opacity"].forEach(a=>el.removeAttribute(a));
+      if(el.hasAttribute("style")){const s=el.getAttribute("style").replace(/(fill|stroke|filter|opacity|mask|clip-path)\s*:[^;]+;?/gi,"").trim();s?el.setAttribute("style",s):el.removeAttribute("style");}});
+    const out=root.innerHTML.trim();
+    return out||null;}catch(e){return null;}
+}
+function parsePaste(raw){raw=raw.trim();if(!raw)return null;let frag;
+  if(raw.includes("<svg")){const m=raw.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);frag=m?m[1]:raw;}
+  else if(/^[Mm]\s*[-\d.]/.test(raw)){frag=`<path d="${raw.replace(/"/g,"&quot;")}"/>`;}
+  else frag=raw;
+  return stripPaint(frag);
+}
+/* fit arbitrary geometry into the VB box using getBBox */
+function fitTransform(geomStr){
+  const tmp=document.createElementNS(svgns,"svg");
+  tmp.setAttribute("style","position:fixed;left:-99999px;top:0;width:500px;height:500px;opacity:0;pointer-events:none");
+  tmp.innerHTML=`<g>${geomStr}</g>`;
+  document.body.appendChild(tmp);
+  let bb;try{bb=tmp.firstChild.getBBox();}catch(e){bb=null;}
+  document.body.removeChild(tmp);
+  if(!bb||!bb.width||!bb.height)return null;
+  const pad=30,avail=VB-pad*2,s=Math.min(avail/bb.width,avail/bb.height);
+  const tx=(VB-bb.width*s)/2-bb.x*s, ty=(VB-bb.height*s)/2-bb.y*s;
+  return `translate(${tx.toFixed(2)} ${ty.toFixed(2)}) scale(${s.toFixed(4)})`;
+}
+
+/* ---------- state ---------- */
+let isid=1;
+const state={
+  shape:"house", custom:null, customFit:null, fill:"#72FFB2",
+  inner:[
+    {id:isid++, color:"#ffffff", ox:0, oy:0,  blur:11, op:1,  mode:"color-dodge"},
+    {id:isid++, color:"#72FFB2", ox:0, oy:-26, blur:26, op:1,  mode:"normal"},
+  ],
+  sel:null,
+  grainOn:true, grainColor:"#72FFB2", grainDensity:22, grainFreq:130,
+  dropOn:false, dropColor:"#ffffff", dropY:4, dropBlur:3,
+  bg:"#5e9a96", transparent:false,
+};
+state.sel=state.inner[0].id;
+
+/* ---------- grain tableValues ---------- */
+function grainTable(density){ // density 0..60 -> count of 1s out of 100, contiguous block
+  const ones=Math.round(density);const arr=new Array(100).fill(0);
+  const start=14;for(let i=0;i<ones&&start+i<100;i++)arr[start+i]=1;
+  return arr.join(" ");
+}
+
+/* ---------- build SVG ---------- */
+function geometry(){
+  if(state.custom){ return state.customFit?`<g transform="${state.customFit}">${state.custom}</g>`:state.custom; }
+  if(IMPORTED[state.shape]){ const imp=IMPORTED[state.shape]; const fit=(impFit[state.shape]||(impFit[state.shape]=fitTransform(imp.g)));
+    return fit?`<g transform="${fit}">${imp.g}</g>`:imp.g; }
+  return SHAPES[state.shape]();
+}
+function buildSVG(){
+  const geom=geometry();
+  const bg=state.transparent?"none":state.bg;
+  let p="";                       // filter primitives
+  p+=`<feFlood flood-opacity="0" result="bg"/>`;
+  let prevForFinal=null;
+  if(state.dropOn){
+    p+=`<feColorMatrix in="SourceAlpha" type="matrix" values="${HARD}" result="dha"/>`+
+       `<feOffset dy="${state.dropY}"/>`+
+       `<feGaussianBlur stdDeviation="${state.dropBlur}"/>`+
+       `<feComposite in2="dha" operator="out"/>`+
+       `<feColorMatrix type="matrix" values="${colorMatrix(state.dropColor,1)}"/>`+
+       `<feBlend mode="normal" in2="bg" result="drop"/>`;
+    prevForFinal="drop";
+  }
+  p+=`<feBlend mode="normal" in="SourceGraphic" in2="bg" result="shape"/>`;
+  let last="shape";
+  state.inner.forEach((s,i)=>{
+    const r=`is${i}`;
+    p+=`<feColorMatrix in="SourceAlpha" type="matrix" values="${HARD}" result="ha${i}"/>`+
+       `<feOffset dx="${s.ox}" dy="${s.oy}"/>`+
+       `<feGaussianBlur stdDeviation="${s.blur}"/>`+
+       `<feComposite in2="ha${i}" operator="arithmetic" k2="-1" k3="1"/>`+
+       `<feColorMatrix type="matrix" values="${colorMatrix(s.color,s.op)}"/>`+
+       `<feBlend mode="${s.mode}" in2="${last}" result="${r}"/>`;
+    last=r;
+  });
+  if(state.grainOn && state.grainDensity>0){
+    const f=(state.grainFreq/1000).toFixed(4);
+    p+=`<feTurbulence type="fractalNoise" baseFrequency="${f} ${f}" stitchTiles="stitch" numOctaves="3" seed="2048" result="noise"/>`+
+       `<feColorMatrix in="noise" type="luminanceToAlpha" result="an"/>`+
+       `<feComponentTransfer in="an" result="cn"><feFuncA type="discrete" tableValues="${grainTable(state.grainDensity)}"/></feComponentTransfer>`+
+       `<feComposite operator="in" in2="${last}" in="cn" result="nclip"/>`+
+       `<feFlood flood-color="${state.grainColor}" result="gflood"/>`+
+       `<feComposite operator="in" in2="nclip" in="gflood" result="gcol"/>`+
+       `<feMerge result="withNoise"><feMergeNode in="${last}"/><feMergeNode in="gcol"/></feMerge>`;
+    last="withNoise";
+  }
+  if(prevForFinal){
+    p+=`<feBlend mode="normal" in="${last}" in2="${prevForFinal}" result="final"/>`;
+    last="final";
+  }
+  const filter=`<filter id="fx" x="-60%" y="-60%" width="220%" height="220%" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">${p}</filter>`;
+  return `<svg xmlns="${svgns}" viewBox="0 0 ${VB} ${VB}" width="${VB}" height="${VB}">
+  <defs>${filter}</defs>
+  ${bg!=="none"?`<rect x="0" y="0" width="${VB}" height="${VB}" fill="${bg}"/>`:""}
+  <g filter="url(#fx)"><g fill="${state.fill}" fill-rule="evenodd">${geom}</g></g>
+</svg>`;
+}
+
+/* ---------- render ---------- */
+function render(){
+  $("viewport").innerHTML=buildSVG();
+  $("foot").textContent=`viewBox 0 0 ${VB} ${VB}  ·  ${state.inner.length} inner shadow${state.inner.length===1?"":"s"}  ·  korrel ${state.grainOn?state.grainDensity:"uit"}`;
+}
+
+/* ---------- shape buttons ---------- */
+const shapesEl=$("shapes");
+function makeShapeBtn(k,innerSvg){const b=document.createElement("button");b.dataset.shape=k;if(k===state.shape&&!state.custom)b.classList.add("active");
+  b.innerHTML=innerSvg;
+  b.onclick=()=>{state.shape=k;state.custom=null;state.customFit=null;$("paste").value="";updateIconStatus();[...shapesEl.children].forEach(c=>c.classList.toggle("active",c===b));render();};
+  shapesEl.appendChild(b);}
+SHAPE_KEYS.forEach(k=>makeShapeBtn(k,`<svg viewBox="0 0 ${VB} ${VB}"><g fill="currentColor">${SHAPES[k]()}</g></svg>`));
+IMPORTED_KEYS.forEach(k=>makeShapeBtn(k,`<svg viewBox="${IMPORTED[k].vb}" preserveAspectRatio="xMidYMid meet"><g fill="currentColor">${IMPORTED[k].g}</g></svg>`));
+
+/* ---------- color swatches ---------- */
+function bindColor(id,chip,hex,key,after){const inp=$(id);const upd=()=>{state[key]=inp.value;$(chip).style.background=inp.value;$(hex).textContent=inp.value;render();after&&after();};inp.oninput=upd;upd();}
+bindColor("fill","chipFill","hexFill","fill");
+bindColor("grainColor","chipGrain","hexGrain","grainColor");
+bindColor("dropColor","chipDrop","hexDrop","dropColor");
+bindColor("bg","chipBg","hexBg","bg");
+
+/* ---------- simple ranges/toggles ---------- */
+function bindRange(id,key,fmt,scale){const inp=$(id),val=$("v"+id.charAt(0).toUpperCase()+id.slice(1));const upd=()=>{state[key]=scale?+inp.value*scale:+inp.value;if(val)val.textContent=fmt(inp.value);render();};inp.oninput=upd;upd();}
+bindRange("grainDensity","grainDensity",v=>v,null);
+bindRange("grainFreq","grainFreq",v=>v,null);
+bindRange("dropY","dropY",v=>v,null);
+bindRange("dropBlur","dropBlur",v=>v,null);
+$("grainOn").onchange=e=>{state.grainOn=e.target.checked;render();};
+$("dropOn").onchange=e=>{state.dropOn=e.target.checked;render();};
+$("transBtn").onclick=()=>{state.transparent=!state.transparent;$("transBtn").textContent=state.transparent?"aan":"uit";$("transBtn").style.color=state.transparent?"var(--accent)":"";render();};
+
+/* fix val-id mapping for grain/drop (ids differ) */
+$("grainDensity").addEventListener("input",e=>$("vGd").textContent=e.target.value);
+$("vGd").textContent=state.grainDensity;
+$("grainFreq").addEventListener("input",e=>$("vGf").textContent=(e.target.value/1000).toFixed(2));
+$("vGf").textContent=(state.grainFreq/1000).toFixed(2);
+$("dropY").addEventListener("input",e=>$("vDy").textContent=e.target.value);
+$("vDy").textContent=state.dropY;
+$("dropBlur").addEventListener("input",e=>$("vDb").textContent=e.target.value);
+$("vDb").textContent=state.dropBlur;
+
+/* ---------- custom icon (paste / upload / drop) ---------- */
+function updateIconStatus(){const el=$("iconStatus");if(state.custom){el.style.display="block";el.textContent="Eigen icoon actief.";}else el.style.display="none";}
+function applyCustom(raw){
+  const parsed=parsePaste(raw);
+  if(parsed){state.custom=parsed;state.customFit=fitTransform(parsed);[...shapesEl.children].forEach(c=>c.classList.remove("active"));updateIconStatus();render();return true;}
+  return false;
+}
+$("paste").addEventListener("input",e=>{
+  if(e.target.value.trim()){ if(!applyCustom(e.target.value)){state.custom=null;state.customFit=null;updateIconStatus();render();} }
+  else { state.custom=null;state.customFit=null;updateIconStatus();
+    [...shapesEl.children].forEach(c=>c.classList.toggle("active",c.dataset.shape===state.shape));render(); }
+});
+$("uploadBtn").onclick=()=>$("svgFile").click();
+$("svgFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{if(!applyCustom(rd.result))alert("Kon deze SVG niet verwerken.");$("paste").value="";};rd.readAsText(f);e.target.value="";};
+$("clearIcon").onclick=()=>{state.custom=null;state.customFit=null;$("paste").value="";updateIconStatus();[...shapesEl.children].forEach(c=>c.classList.toggle("active",c.dataset.shape===state.shape));render();};
+// drag & drop an .svg onto the canvas
+const cw=document.querySelector(".canvas-wrap");
+["dragenter","dragover"].forEach(ev=>cw.addEventListener(ev,e=>{e.preventDefault();cw.style.outline="2px dashed var(--accent)";cw.style.outlineOffset="-10px";}));
+["dragleave","drop"].forEach(ev=>cw.addEventListener(ev,e=>{e.preventDefault();cw.style.outline="";}));
+cw.addEventListener("drop",e=>{const f=e.dataTransfer.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{if(!applyCustom(rd.result))alert("Kon deze SVG niet verwerken.");};rd.readAsText(f);});
+
+/* ---------- inner-shadow stack ---------- */
+function selIS(){return state.inner.find(x=>x.id===state.sel);}
+function renderISList(){
+  const list=$("isList");
+  list.innerHTML=state.inner.length
+    ? state.inner.map((s,i)=>`<button class="layer-chip${s.id===state.sel?" active":""}" data-id="${s.id}"><span class="dot" style="background:${s.color}"></span>Laag ${i+1}<span class="mode">${s.mode==="color-dodge"?"dodge":s.mode}</span></button>`).join("")
+    : `<div class="tip" style="color:var(--ink-faint)">Geen inner shadows.</div>`;
+  list.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{state.sel=+b.dataset.id;renderISList();});
+  syncIS();
+}
+function syncIS(){
+  const s=selIS(),ed=$("isEditor");
+  if(!s){ed.style.display="none";return;}
+  ed.style.display="block";
+  $("isColor").value=s.color;$("isChip").style.background=s.color;$("isHex").textContent=s.color;
+  $("isX").value=s.ox;$("vIsX").textContent=s.ox;
+  $("isY").value=s.oy;$("vIsY").textContent=s.oy;
+  $("isB").value=s.blur;$("vIsB").textContent=s.blur;
+  $("isO").value=Math.round(s.op*100);$("vIsO").textContent=Math.round(s.op*100)+"%";
+  document.querySelectorAll("#isMode button").forEach(b=>b.classList.toggle("active",b.dataset.m===s.mode));
+}
+$("addIS").onclick=()=>{const n={id:isid++,color:state.fill,ox:0,oy:0,blur:20,op:1,mode:"normal"};state.inner.push(n);state.sel=n.id;render();renderISList();};
+$("isColor").oninput=e=>{const s=selIS();if(s){s.color=e.target.value;$("isChip").style.background=s.color;$("isHex").textContent=s.color;render();const d=$("isList").querySelector(`[data-id="${s.id}"] .dot`);if(d)d.style.background=s.color;}};
+$("isX").oninput=e=>{const s=selIS();if(s){s.ox=+e.target.value;$("vIsX").textContent=e.target.value;render();}};
+$("isY").oninput=e=>{const s=selIS();if(s){s.oy=+e.target.value;$("vIsY").textContent=e.target.value;render();}};
+$("isB").oninput=e=>{const s=selIS();if(s){s.blur=+e.target.value;$("vIsB").textContent=e.target.value;render();}};
+$("isO").oninput=e=>{const s=selIS();if(s){s.op=+e.target.value/100;$("vIsO").textContent=e.target.value+"%";render();}};
+document.querySelectorAll("#isMode button").forEach(b=>b.onclick=()=>{const s=selIS();if(s){s.mode=b.dataset.m;render();renderISList();}});
+$("isDup").onclick=()=>{const s=selIS();if(s){const n={...s,id:isid++};const i=state.inner.indexOf(s);state.inner.splice(i+1,0,n);state.sel=n.id;render();renderISList();}};
+$("isDel").onclick=()=>{const s=selIS();if(s){state.inner=state.inner.filter(x=>x.id!==s.id);state.sel=state.inner.length?state.inner[state.inner.length-1].id:null;render();renderISList();}};
+
+/* ---------- export ---------- */
+function currentSVG(){return buildSVG();}
+function flashBtn(b,m){if(!b)return;const t=b.dataset._t||b.textContent;b.dataset._t=t;b.textContent=m;setTimeout(()=>b.textContent=b.dataset._t,1400);}
+function robustCopy(text,btn){const fb=()=>{const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.top="-9999px";document.body.appendChild(ta);ta.focus();ta.select();let ok=false;try{ok=document.execCommand("copy");}catch(e){}document.body.removeChild(ta);flashBtn(btn,ok?"Gekopieerd ✓":"Selecteer & kopieer");};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(()=>flashBtn(btn,"Gekopieerd ✓")).catch(fb);else fb();}
+const modal=$("exportModal");let lastSvgUrl=null,lastPngUrl=null;
+function tryOpen(url){const a=document.createElement("a");a.href=url;a.download=url===lastPngUrl?"icon.png":"icon.svg";document.body.appendChild(a);a.click();a.remove();window.open(url,"_blank");}
+function openExport(){const svg=currentSVG();$("svgCode").value=svg;
+  if(lastSvgUrl)URL.revokeObjectURL(lastSvgUrl);lastSvgUrl=URL.createObjectURL(new Blob([svg],{type:"image/svg+xml"}));
+  $("pngImg").removeAttribute("src");lastPngUrl=null;
+  const img=new Image();img.onload=()=>{const sc=4,cv=document.createElement("canvas");cv.width=VB*sc;cv.height=VB*sc;cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);lastPngUrl=cv.toDataURL("image/png");$("pngImg").src=lastPngUrl;};
+  img.onerror=()=>{$("pngImg").alt="PNG-render mislukte — gebruik de SVG.";};
+  img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+  modal.classList.add("open");}
+$("exportBtn").onclick=openExport;
+$("copyBtn").onclick=()=>robustCopy(currentSVG(),$("copyBtn"));
+$("copySvg").onclick=()=>robustCopy($("svgCode").value,$("copySvg"));
+$("openSvg").onclick=()=>{if(lastSvgUrl)tryOpen(lastSvgUrl);};
+$("openPng").onclick=()=>{if(lastPngUrl)tryOpen(lastPngUrl);};
+$("modalClose").onclick=()=>modal.classList.remove("open");
+modal.addEventListener("click",e=>{if(e.target===modal)modal.classList.remove("open");});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")modal.classList.remove("open");});
+
+/* ---------- defaults persistence ---------- */
+const LSKEY="glowforge_basic_defaults_v1";
+function serialize(){const{shape,custom,customFit,fill,inner,grainOn,grainColor,grainDensity,grainFreq,dropOn,dropColor,dropY,dropBlur,bg,transparent}=state;
+  return {shape,custom,customFit,fill,inner:JSON.parse(JSON.stringify(inner)),grainOn,grainColor,grainDensity,grainFreq,dropOn,dropColor,dropY,dropBlur,bg,transparent};}
+function applyData(o){
+  Object.assign(state,JSON.parse(JSON.stringify(o)));
+  if(state.inner&&state.inner.length){isid=Math.max(...state.inner.map(s=>s.id))+1;state.sel=state.inner[0].id;}
+  else{state.inner=[];state.sel=null;}
+}
+const BAKED=serialize();              // capture the built-in defaults before loading saved ones
+function saveDefaults(){try{localStorage.setItem(LSKEY,JSON.stringify(serialize()));flashBtn($("saveDef"),"Bewaard ✓");}catch(e){flashBtn($("saveDef"),"Niet beschikbaar hier");}}
+function loadDefaults(){try{const j=localStorage.getItem(LSKEY);if(j){applyData(JSON.parse(j));return true;}}catch(e){}return false;}
+function resetDefaults(){try{localStorage.removeItem(LSKEY);}catch(e){}applyData(BAKED);syncAllUI();flashBtn($("resetDef"),"Hersteld ✓");}
+$("saveDef").onclick=saveDefaults;
+$("resetDef").onclick=resetDefaults;
+
+/* ---------- push full state -> UI ---------- */
+function setColor(id,chip,hex,val){$(id).value=val;$(chip).style.background=val;$(hex).textContent=val;}
+function syncAllUI(){
+  setColor("fill","chipFill","hexFill",state.fill);
+  setColor("grainColor","chipGrain","hexGrain",state.grainColor);
+  setColor("dropColor","chipDrop","hexDrop",state.dropColor);
+  setColor("bg","chipBg","hexBg",state.bg);
+  $("grainOn").checked=state.grainOn; $("dropOn").checked=state.dropOn;
+  $("grainDensity").value=state.grainDensity; $("vGd").textContent=state.grainDensity;
+  $("grainFreq").value=state.grainFreq; $("vGf").textContent=(state.grainFreq/1000).toFixed(2);
+  $("dropY").value=state.dropY; $("vDy").textContent=state.dropY;
+  $("dropBlur").value=state.dropBlur; $("vDb").textContent=state.dropBlur;
+  $("transBtn").textContent=state.transparent?"aan":"uit"; $("transBtn").style.color=state.transparent?"var(--accent)":"";
+  [...shapesEl.children].forEach(c=>c.classList.toggle("active",!state.custom&&c.dataset.shape===state.shape));
+  $("paste").value=""; updateIconStatus();
+  render(); renderISList();
+}
+
+/* ---------- init ---------- */
+loadDefaults();
+syncAllUI();
+</script>
